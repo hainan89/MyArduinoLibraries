@@ -575,20 +575,22 @@ struct int_param_s {
         static inline void MPUSelecting(uint8_t MPUID)
         {
             byte dataOut[2] = {255, 255};
+			
+	     shift595.write(2, dataOut);
+	     delay(1);	 
             if (MPUID > 0 && MPUID <= 16)
             {
                 unsigned short MPUMask = 1 << (MPUID - 1);
                 dataOut[1] = ~(MPUMask >> 8);
                 dataOut[0] = ~((byte)MPUMask);
                 shift595.write(2, dataOut);
-                //Serial.println(dataOut[0]);
-                //Serial.println(dataOut[1]);
+		   delay(1);
             }
-            else
+            /*else
             {
                 shift595.write(2, dataOut);
-            }
-            delay(1); //Important!!
+            }*/
+            //delay(5);
         }
         
 		static inline uint8_t i2c_read(unsigned char slave_addr, unsigned char reg_addr, unsigned char length, unsigned char *data)
@@ -620,7 +622,6 @@ struct int_param_s {
 				SPI.transfer(data[i]);
 			}
 			
-			//digitalWrite(10, HIGH);
             MPUSelecting(0);
 
 			return 0;

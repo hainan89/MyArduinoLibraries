@@ -3087,7 +3087,7 @@ uint8_t MPUDriver::mpu_load_firmware(unsigned short length, const unsigned char 
 	unsigned short jj;
     unsigned short this_write;
     /* Must divide evenly into st.hw->bank_size to avoid bank crossings. */
-#define LOAD_CHUNK  (16)
+#define LOAD_CHUNK  (32)
     unsigned char cur[LOAD_CHUNK], dmpBuf[LOAD_CHUNK], tmp[2];
 	
     if (chip_cfg.dmp_loaded)
@@ -3109,7 +3109,8 @@ uint8_t MPUDriver::mpu_load_firmware(unsigned short length, const unsigned char 
 		
 	        if (mpu_read_mem(ii, this_write, cur))
 	            return 4;
-			
+	        if(memcmp(dmpBuf, cur, this_write))	
+				delay(5);
 	 }while(memcmp(dmpBuf, cur, this_write));
         
 		
