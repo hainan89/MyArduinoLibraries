@@ -581,14 +581,14 @@ struct int_param_s {
                 dataOut[1] = ~(MPUMask >> 8);
                 dataOut[0] = ~((byte)MPUMask);
                 shift595.write(2, dataOut);
-                Serial.println(dataOut[0]);
-                Serial.println(dataOut[1]);
+                //Serial.println(dataOut[0]);
+                //Serial.println(dataOut[1]);
             }
             else
             {
                 shift595.write(2, dataOut);
             }
-            delay(1); // !!! Important
+            delay(1); //Important!!
         }
         
 		static inline uint8_t i2c_read(unsigned char slave_addr, unsigned char reg_addr, unsigned char length, unsigned char *data)
@@ -597,11 +597,14 @@ struct int_param_s {
 			//digitalWrite(10, LOW);
             MPUSelecting(slave_addr);
 			SPI.transfer(reg_addr | 0x80); // read
+			
 			for(uint8_t i = 0 ; i < length; i++)
 			{
 				data[i] = SPI.transfer(0x00);
 			}
 			//digitalWrite(10, HIGH);
+			
+			
             MPUSelecting(0);
 
 			return 0;

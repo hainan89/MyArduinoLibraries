@@ -3100,17 +3100,21 @@ uint8_t MPUDriver::mpu_load_firmware(unsigned short length, const unsigned char 
     for (ii = 0; ii < length; ii += this_write) {
         this_write = min(LOAD_CHUNK, length - ii);
 		
-		for(jj = 0 ; jj < this_write; jj++){dmpBuf[jj] = pgm_read_byte_near(firmware + ii + jj);}
+	 for(jj = 0 ; jj < this_write; jj++){dmpBuf[jj] = pgm_read_byte_near(firmware + ii + jj);}
+	 
+	 do
+	 {
+	 	if (mpu_write_mem(ii, this_write,  dmpBuf))  //(unsigned char*)&firmware[ii])
+            		return 3;
 		
+	        if (mpu_read_mem(ii, this_write, cur))
+	            return 4;
+			
+	 }while(memcmp(dmpBuf, cur, this_write));
+        
 		
-        if (mpu_write_mem(ii, this_write,  dmpBuf))  //(unsigned char*)&firmware[ii])
-            return 3;
-		
-        if (mpu_read_mem(ii, this_write, cur))
-            return 4;
-		
-        if (memcmp(dmpBuf, cur, this_write))
-            return 5;
+       // if (memcmp(dmpBuf, cur, this_write))
+            //return ii;
 		
     }
 
